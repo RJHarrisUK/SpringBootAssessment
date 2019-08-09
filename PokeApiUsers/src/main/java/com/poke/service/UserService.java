@@ -12,4 +12,6 @@ public interface UserService {
 
 	User addUser(User user);
 
+	Boolean userExists(Long id);
+
 }

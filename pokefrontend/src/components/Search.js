@@ -9,7 +9,8 @@ export default class Search extends Component {
             data: "",
             memberNumber: "",
             pokemonNameOrId: "",
-            picture: ""
+            picture: "",
+            error: ""
         };
     }
 
@@ -21,11 +22,12 @@ export default class Search extends Component {
         console.log(event.target[1].value)
 
         axios
-            .get("https://pokeapi.co/api/v2/pokemon/" + this.state.pokemonNameOrId + "")
+            .get("http://localhost:8079/getPokemon/" + this.state.memberNumber + "/" + this.state.pokemonNameOrId + "")
             .then(response => {
                 this.setState({
                     data: response.data,
-                    picture: response.data.sprites.front_default
+                    picture: response.data.sprites.front_default,
+                    error: JSON.stringify(response.data)
                 });
                 console.log(response.data);
                 console.log(response.data.name);
@@ -55,7 +57,7 @@ export default class Search extends Component {
                 <h1>Pokemon Search</h1>
                 <form onSubmit={this.pokemonSearch}>
                     Member No: <input id="memberNumber" type="text" placeholder="Member Number" onChange={this.changeMemberNumber} ></input>
-                    {/* <p style={{ color: 'red' }}>{this.state.memberNumberError}</p> */}
+                    {/* <p style={{ color: 'red' }}>{this.state.error}</p> */}
                     <br></br>
                     Pokemon Name or ID: <input id="pokemonName" type="text" placeholder="Pokemon Name or ID" onChange={this.changePokemonNameOrId} ></input>
                     {/* <p style={{ color: 'red' }}>{this.state.pokemonNameError}</p> */}

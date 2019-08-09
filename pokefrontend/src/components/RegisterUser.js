@@ -21,14 +21,14 @@ export default class RegisterUser extends Component {
         }
 
         axios
-            .post("http://localhost:8080/createUser", newUser)
+            .post("http://localhost:8079/addUser", newUser)
             .then(response => {
 
-                this.setState({ "memberNumber": "Your account number is: " + JSON.stringify(response.data.memberNumber) })
-                this.setState({ "userName": "Your username is: " + JSON.stringify(response.data.userName) })
+                this.setState({ "memberNumber": "Your account number is: " + JSON.stringify(response.data.body.memberNumber) })
+                this.setState({ "userName": "Your username is: " + JSON.stringify(response.data.body.userName) })
 
-                console.log(response.data.memberNumber)
-                console.log(response.data.userName)
+                console.log(response.data.body.memberNumber)
+                console.log(response.data.body.userName)
 
             }).catch(err => console.log(err))
     }

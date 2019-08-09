@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+import com.poke.persistence.domain.SentUser;
 import com.poke.persistence.domain.User;
 import com.poke.persistence.repository.UserRepository;
 import com.poke.util.UserNotFoundException;
@@ -13,8 +15,14 @@ import com.poke.util.UserNotFoundException;
 @Service
 public class UserServiceImpl implements UserService {
 
-	@Autowired
 	private UserRepository repo;
+	private JmsTemplate jmsTemplate;
+
+	@Autowired
+	public UserServiceImpl(UserRepository repo, JmsTemplate jmsTemplate) {
+		this.repo = repo;
+		this.jmsTemplate = jmsTemplate;
+	}
 
 	// READ
 	@Override
@@ -32,20 +40,20 @@ public class UserServiceImpl implements UserService {
 	// CREATE
 	@Override
 	public User addUser(User user) {
-//		sendToQueue(user);
+		sendToQueue(user);
 		return repo.save(user);
 	}
 
-	// CHECK IF ACCOUNT EXISTS
-//	private boolean userExists(Long id) {
-//		Optional<User> userOptional = repo.findById(id);
-//		return userOptional.isPresent();
-//	}
+//	 CHECK IF ACCOUNT EXISTS
+	public Boolean userExists(Long id) {
+		Optional<User> userOptional = repo.findById(id);
+		return userOptional.isPresent();
+	}
 
-	// SEND TO QUEUE
-//	private void sendToQueue(User user) {
-//		SentUser userToStore = new SentUser(user);
-//		jmsTemplate.convertAndSend("UserQueue", userToStore);
-//	}
+	// RECORD SEARCH - SEND TO QUEUE
+	private void sendToQueue(User user) {
+		SentUser userToStore = new SentUser(user);
+		jmsTemplate.convertAndSend("UserQueue", userToStore);
+	}
 
 }
